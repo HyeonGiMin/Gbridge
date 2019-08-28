@@ -27,7 +27,7 @@ public class JDBC_1 {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sampledb", "root","1234"); // JDBC 연결
 			String dbURL = "jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=Asia/Seoul";
-			conn = DriverManager.getConnection(dbURL, "root","Aquea6725!");
+			conn = DriverManager.getConnection(dbURL, "root","1234");
 			sc=new Scanner(System.in);
 			System.out.println("DB 연결 완료 ---- > OK !!!");
 			

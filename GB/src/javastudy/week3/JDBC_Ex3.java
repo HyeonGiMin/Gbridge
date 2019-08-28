@@ -10,7 +10,7 @@ public class JDBC_Ex3 {
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver"); // MySQL 드라이버 로드
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=Asia/Seoul", "root","Aquea6725!"); // JDBC 연결
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=Asia/Seoul", "root","1234"); // JDBC 연결
 			System.out.println("DB 연결 완료");
 			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
 			stmt.executeUpdate("insert into sInfo (s_name, s_no, year) values('아무개', '0893012', '3');"); // 레코드 추가

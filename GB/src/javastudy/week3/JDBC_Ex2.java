@@ -14,7 +14,7 @@ public class JDBC_Ex2 {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sampledb", "root","1234"); // JDBC 연결
 			String dbURL = "jdbc:mysql://localhost:3306/test?useSSL=false&serverTimezone=Asia/Seoul";
-			conn = DriverManager.getConnection(dbURL, "root","Aquea6725!");
+			conn = DriverManager.getConnection(dbURL, "root","1234");
 			
 			System.out.println("DB 연결 완료 ---- > OK !!!");
 			stmt = conn.createStatement(); // SQL문 처리용 Statement 객체 생성
