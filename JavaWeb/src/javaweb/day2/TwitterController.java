@@ -2,6 +2,7 @@ package javaweb.day2;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class TwitterController extends HttpServlet {
 	private ServletContext application;
 	private HttpSession session;
 	private String view;
-       
+    private TweetDAO dao=new TweetDAO();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -36,7 +37,7 @@ public class TwitterController extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
     
-    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, SQLException {
 		// TODO Auto-generated method stub
     	request.setCharacterEncoding("utf-8");
     	this.request=request;
@@ -44,56 +45,73 @@ public class TwitterController extends HttpServlet {
     	session = request.getSession();
     	application = request.getServletContext();
     	
+    	
     	String action =request.getParameter("action");
     	if(action==null) {
     		session.invalidate();
     		response.sendRedirect("/JavaWeb/day2/twitter_login.jsp");
     		return;
     	}
-    	
+    	application.log("로그3");
     	switch(action) {
     	case "login":Login(); break;
     	case "tweet":tweet();break;
     	}
-    	
+    	application.log("로그1");
     	RequestDispatcher dispatcher =request.getRequestDispatcher(view);
+    	application.log(view);
     	dispatcher.forward(request,response);
 		
 	}
 
-	private void tweet() {
+	private void tweet() throws SQLException {
+		dao.Connect();
+		application.log("로그2");
 		String msg = request.getParameter("msg");
 		String username = (String) session.getAttribute("user");
-		
-		List<String> msgs = (List<String>) application.getAttribute("msgs");
-		if(msgs == null) {
-			msgs = new ArrayList<String>();
-			application.setAttribute("msgs", msgs);
-		}
-		
 		LocalDateTime date = LocalDateTime.now();
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		List<String> msgs =dao.getDB();  
+		request.setAttribute("msgs",msgs);
 		
-		msgs.add(username+" :: "+msg+" , "+date.format(f));
+		dao.insertDB(username+" :: "+msg+" , "+date.format(f));
 		application.log(msg+"추가됨");
 		
+		
+		
+	   
+		dao.Disconnect();
 		view = "/day2/tweet_list.jsp";
+	
 	}
 
-	private void Login() {
+	private void Login() throws SQLException {
 		// TODO Auto-generated method stub
+		dao.Connect();
+		application.log("로그");
 		String username=request.getParameter("username");
 		if(username !=null) {
 			session.setAttribute("user", username);
+			
 		}
+		List<String> msgs =dao.getDB();  
+		
+	    request.setAttribute("msgs",msgs);
+		dao.Disconnect();
 		view="/day2/tweet_list.jsp";
+		
 	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request,response);
+		try {
+			processRequest(request,response);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	
@@ -101,7 +119,12 @@ public class TwitterController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request,response);
+		try {
+			processRequest(request,response);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	
