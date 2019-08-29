@@ -45,13 +45,14 @@ public class TwitterController extends HttpServlet {
     	session = request.getSession();
     	application = request.getServletContext();
     	
-    	
+    	application.log("로그4");
     	String action =request.getParameter("action");
     	if(action==null) {
     		session.invalidate();
     		response.sendRedirect("/JavaWeb/day2/twitter_login.jsp");
     		return;
     	}
+    	
     	application.log("로그3");
     	switch(action) {
     	case "login":Login(); break;
@@ -71,12 +72,14 @@ public class TwitterController extends HttpServlet {
 		String username = (String) session.getAttribute("user");
 		LocalDateTime date = LocalDateTime.now();
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		List<String> msgs =dao.getDB();  
-		request.setAttribute("msgs",msgs);
+		
+		
+		
 		
 		dao.insertDB(username+" :: "+msg+" , "+date.format(f));
-		application.log(msg+"추가됨");
 		
+		application.log(msg+"추가됨");
+		request.setAttribute("msgs",dao.getDB());
 		
 		
 	   
@@ -90,13 +93,11 @@ public class TwitterController extends HttpServlet {
 		dao.Connect();
 		application.log("로그");
 		String username=request.getParameter("username");
+		request.setAttribute("msgs",dao.getDB());
 		if(username !=null) {
 			session.setAttribute("user", username);
 			
 		}
-		List<String> msgs =dao.getDB();  
-		
-	    request.setAttribute("msgs",msgs);
 		dao.Disconnect();
 		view="/day2/tweet_list.jsp";
 		
@@ -107,6 +108,7 @@ public class TwitterController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+	
 			processRequest(request,response);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -120,6 +122,7 @@ public class TwitterController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+	
 			processRequest(request,response);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
